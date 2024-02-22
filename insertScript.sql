@@ -10,3 +10,5 @@ select * from user;
 DELETE FROM user 
 WHERE UserID = 2;
 
+select * from user;
+
