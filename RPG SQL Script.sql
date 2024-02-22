@@ -1,11 +1,11 @@
 CREATE TABLE USER
 (
-  UserEmail INT NOT NULL,
-  UserFName INT NOT NULL,
-  UserLName INT NOT NULL,
-  UserPassword INT NOT NULL,
-  Username INT NOT NULL,
   UserID INT NOT NULL,
+  UserFName VARCHAR(25) NOT NULL,
+  UserLName VARCHAR(25) NOT NULL,
+  UserEmail VARCHAR(25) NOT NULL,
+  UserPassword VARCHAR(25) NOT NULL,
+  Username VARCHAR(25) NOT NULL,
   PRIMARY KEY (UserID),
   UNIQUE (UserEmail),
   UNIQUE (Username)
@@ -13,9 +13,9 @@ CREATE TABLE USER
 
 CREATE TABLE CLASS
 (
-  ClassName INT NOT NULL,
-  ClassDescription INT NOT NULL,
   ClassID INT NOT NULL,
+  ClassName VARCHAR(25) NOT NULL,
+  ClassDescription VARCHAR(50) NOT NULL,
   ClassBeffynessBonus INT NOT NULL,
   ClassSpeedinessBonus INT NOT NULL,
   ClassSmartnessBonus INT NOT NULL,
@@ -27,7 +27,7 @@ CREATE TABLE ITEM
 (
   ItemID INT NOT NULL,
   ItemCost INT NOT NULL,
-  ItemName INT NOT NULL,
+  ItemName VARCHAR(25) NOT NULL,
   ItemSpeedinessBonus INT NOT NULL,
   ItemSmartnessBonus INT NOT NULL,
   ItemBeefynessBonus INT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE ITEM
 CREATE TABLE RACE
 (
   RaceID INT NOT NULL,
-  RaceName INT NOT NULL,
+  RaceName VARCHAR(25) NOT NULL,
   RaceDescription INT NOT NULL,
   RaceBuffnessBonus INT NOT NULL,
   RaceSmartnessBonus INT NOT NULL,
@@ -50,8 +50,8 @@ CREATE TABLE RACE
 CREATE TABLE CHARACTERS
 (
   CharacterID INT NOT NULL,
-  CharacterFName INT NOT NULL,
-  CharacterLName INT NOT NULL,
+  CharacterFName VARCHAR(25) NOT NULL,
+  CharacterLName VARCHAR(25) NOT NULL,
   CharacterSmartness INT NOT NULL,
   CharacterBuffness INT NOT NULL,
   CharacterBeefyness INT NOT NULL,
