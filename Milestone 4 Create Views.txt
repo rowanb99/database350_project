@@ -1,0 +1,22 @@
+Milestone 4 Create Views:
+Application pages(register/signup, login, info, License, Home, Hamburger Icon to select character, select custom items)
+
+register/signup: gmail, username, password from user table.
+
+login: username, password from user table
+
+Info: 
+
+License:
+
+Home:
+
+
+
+
+
+view statements:
+
+CREATE VIEW UserCredentialsView AS
+SELECT Username, UserPassword
+FROM user;
