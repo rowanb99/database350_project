@@ -39,7 +39,7 @@ CREATE TABLE RACE
 (
   RaceID INT NOT NULL AUTO_INCREMENT,
   RaceName VARCHAR(25) NOT NULL,
-  RaceDescription INT NOT NULL,
+  RaceDescription VARCHAR(50) NOT NULL,
   RaceBuffnessBonus INT NOT NULL,
   RaceSmartnessBonus INT NOT NULL,
   RaceBeefynessBonus INT NOT NULL,
