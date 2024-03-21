@@ -24,3 +24,32 @@ FROM user;
 CREATE VIEW `ItemView` AS
 SELECT ItemCost, ItemName, ItemSpeedinessBonus, ItemSmartnessBonus, ItemBeefynessBonus, ItemBaseDamage
 FROM item;
+
+CREATE VIEW CharacterInfo AS
+SELECTUserID, CharacterID, CharacterFName, CharacterLName,
+CharacterSmartness, CharacterBuffness, CharacterBeefyness, CharacterSpeediness,
+ClassName,
+ClassSmartnessBonus, ClassBuffnessBonus, ClassBeefynessBonus, ClassSpeedinessBonus,
+RaceName,
+RaceSmartnessBonus, RaceBuffnessBonus, RaceBeefynessBonus, RaceSpeedinessBonus,
+ItemName,
+ItemSmartnessBonus, ItemBeefynessBonus, ItemSpeedinessBonus
+FROM characters
+LEFT JOIN class
+ON characters.ClassID = class.ClassID
+LEFT JOIN race
+ON characters.RaceID = race.RaceID
+LEFT JOIN item
+ON characters.EquippedItemID = item.ItemID;
+
+CREATE VIEW Inventory AS
+SELECT
+characters.CharacterID, CharacterFName,
+CharacterSmartness, CharacterBuffness, CharacterBeefyness, CharacterSpeediness,
+ItemName, ItemCost,
+ItemSmartnessBonus, ItemBeefynessBonus, ItemSpeedinessBonus
+FROM character_inventory
+LEFT JOIN item
+ON character_inventory.ItemID = item.ItemID
+LEFT JOIN characters
+ON character_inventory.CharacterID = characters.CharacterID;
