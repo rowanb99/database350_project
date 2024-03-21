@@ -20,3 +20,7 @@ view statements:
 CREATE VIEW UserCredentialsView AS
 SELECT Username, UserPassword
 FROM user;
+
+CREATE VIEW `ItemView` AS
+SELECT ItemCost, ItemName, ItemSpeedinessBonus, ItemSmartnessBonus, ItemBeefynessBonus, ItemBaseDamage
+FROM item;
