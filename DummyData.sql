@@ -47,7 +47,7 @@ INSERT INTO RACE (RaceName, RaceDescription, RaceBuffnessBonus, RaceSmartnessBon
 ('Half-Orc', 'Strong and Versatile', 4, 1, 3, 2),
 ('Half-Elf', 'Blended Ancestry', 2, 2, 1, 4);
 
-INSERT INTO CHARACTER (CharacterFName, CharacterLName, CharacterSmartness, CharacterBuffness, CharacterBeefyness, CharacterSpeediness, UserID, ClassID, RaceID, EquippedItemID) VALUES
+INSERT INTO CHARACTERS (CharacterFName, CharacterLName, CharacterSmartness, CharacterBuffness, CharacterBeefyness, CharacterSpeediness, UserID, ClassID, RaceID, EquippedItemID) VALUES
 ('Mark', 'Johnson', 7, 5, 4, 3, 1, 1, 1, 1),
 ('Lisa', 'Thompson', 8, 3, 2, 1, 2, 2, 2, 2),
 ('Tom', 'Wilson', 5, 4, 3, 2, 3, 3, 3, 3),
