@@ -18,16 +18,33 @@
     {% endwith %}
 
     <!-- Code for adding a new item -->
-    <h2>Add New Item</h2>
+    <h2>Add New Character</h2>
     <form action="/new-item" method="post">
-        <!-- Name -->
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
+        <!-- First Name -->
+        <label for="firstname">First Name:</label>
+        <input type="text" id="firstname" name="firstname" required>
         <br>
-        <!-- Quantity -->
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" required>
+        <!-- Last Name -->
+        <label for="lastname">Last Name:</label>
+        <input type="text" id="lastname" name="lastname" required>
         <br>
+        <!-- Beefiness -->
+        <label for="beefiness">Beefiness:</label>
+        <input type="number" id="beefiness" name="beefiness" required>
+        <br>
+        <!-- Buffness -->
+        <label for="buffness">Buffness:</label>
+        <input type="number" id="buffness" name="buffness" required>
+        <br>
+        <!-- Smartness -->
+        <label for="smartness">Smartness:</label>
+        <input type="number" id="smartness" name="smartness" required>
+        <br>
+        <!-- Speediness -->
+        <label for="speediness">Speediness:</label>
+        <input type="number" id="speediness" name="speediness" required>
+        <br>
+
         <!-- Submit Button -->
         <input type="submit" value="Submit">
     </form>
@@ -38,6 +55,13 @@
         <!-- This is some python jinja2 code. Only existing items will be displayed. -->
         {% for item in items %}
             <li>Name: {{ item[0] }} - Cost: {{ item[1] }} - Damage: {{ item[2] }} - BeefinessBonus: {{ item[3] }} -  SmartnessBonus: {{ item[4] }} - SpeedinessBonus: {{ item[5] }} </li>
+        {% endfor %}
+    </ul>
+
+    <h2> List of Total Chars</h2>
+    <ul>
+        {% for char in chars %}
+            <li>Name: {{ char[0] }} {{ char[1] }} - Character Beefiness: {{ char[2] }} - CharacterBuffness {{ char[3] }} -  CharacterSmartness: {{ char[4] }} - CharacterSpeediness {{ char[5] }} </li>
         {% endfor %}
     </ul>
 </body>

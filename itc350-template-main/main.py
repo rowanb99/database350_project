@@ -37,6 +37,24 @@ def get_all_items():
     # (NOTE: You should do this after each query, otherwise your database may become locked)
     return result
 
+def get_all_chars():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness FROM characters"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    conn.close()
+    return result
+def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "INSERT INTO characters (CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness) VALUES (%s, %s, %s, %s, %s, %s)"
+    cursor.execute(query, (firstname, lastname, beefiness, buffness, smartness, speediness))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
+
 
 # ------------------------ END FUNCTIONS ------------------------ #
 
@@ -46,19 +64,32 @@ def get_all_items():
 @app.route("/", methods=["GET"])
 def home():
     items = get_all_items()  # Call defined function to get all items
-    return render_template("index.html", items=items)  # Return the page to be rendered
+    chars = get_all_chars()
+    return render_template("index.html", items=items, chars=chars) #return the page to be rendered
+
+
 
 
 # EXAMPLE OF POST REQUEST
 @app.route("/new-item", methods=["POST"])
-def add_item():
+def create_char():
     try:
         # Get items from the form
         data = request.form
-        item_name = data["name"]  # This is defined in the input element of the HTML form on index.html
-        item_quantity = data["quantity"]  # This is defined in the input element of the HTML form on index.html
+        char_first_name = data["firstname"]  # This is defined in the input element of the HTML form on index.html
+        char_last_name = data["lastname"]
+        char_beefiness = data["beefiness"]  # This is defined in the input element of the HTML form on index.html
+        char_buffness = data["buffness"]
+        char_smartness = data["smartness"]
+        char_speediness = data["speediness"]
+
+        insertChar(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness)
+
+
 
         # TODO: Insert this data into the database
+
+
 
         # Send message to page. There is code in index.html that checks for these messages
         flash("Item added successfully", "success")
