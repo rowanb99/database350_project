@@ -33,11 +33,11 @@
     </form>
 
     <!-- Code for listing owned items -->
-    <h2>List of Owned Items</h2>
+    <h2>List of Total Items</h2>
     <ul>
         <!-- This is some python jinja2 code. Only existing items will be displayed. -->
         {% for item in items %}
-            <li>Name: {{ item[0] }} - Quantity: {{ item[1] }}</li>
+            <li>Name: {{ item[0] }} - Cost: {{ item[1] }} - Damage: {{ item[2] }} - BeefinessBonus: {{ item[3] }} -  SmartnessBonus: {{ item[4] }} - SpeedinessBonus: {{ item[5] }} </li>
         {% endfor %}
     </ul>
 </body>

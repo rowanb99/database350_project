@@ -1,4 +1,4 @@
-.3-- Delete and Insert
+-- Delete and Insert
 INSERT INTO user (UserFName, UserLName, UserEmail, UserPassword, Username)
 VALUES
 ('Alice', 'Johnson', 'alice.j@example.com', 'alicepassword', 'alice92'),
