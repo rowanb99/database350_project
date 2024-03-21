@@ -29,7 +29,7 @@ def get_all_items():
     conn = get_db_connection()  # Create a new database connection
     cursor = conn.cursor() # Creates a cursor for the connection, you need this to do queries
     # Query the db
-    query = "SELECT ItemName, ItemCost FROM item"
+    query = "SELECT ItemBeefynessBonus, ItemCost FROM item"
     cursor.execute(query)
     # Get result and close
     result = cursor.fetchall() # Gets result from query
