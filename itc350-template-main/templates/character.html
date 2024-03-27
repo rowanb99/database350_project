@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>List of All Characters</title>
+    <link rel="stylesheet" href="static/css/styles.css">
+</head>
+<body>
+    <!-- Show error or success messages if there are any -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Check to see if there are any messages to show -->
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="alert {{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <!-- Display all characters -->
+    <h2>List of All Characters</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Beefiness</th>
+                <th>Buffness</th>
+                <th>Smartness</th>
+                <th>Speediness</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for character in all_characters %}
+            <tr>
+                <td>{{ character[0] }}</td>
+                <td>{{ character[1] }}</td>
+                <td>{{ character[2] }}</td>
+                <td>{{ character[3] }}</td>
+                <td>{{ character[4] }}</td>
+                <td>{{ character[5] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
