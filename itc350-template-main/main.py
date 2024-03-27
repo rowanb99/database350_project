@@ -67,7 +67,12 @@ def home():
     chars = get_all_chars()
     return render_template("index.html", items=items, chars=chars) #return the page to be rendered
 
-
+# character list route
+@app.route("/characters", methods=["GET"])
+def view_all_characters():
+    # Retrieve all characters from the database
+    all_characters = get_all_chars()
+    return render_template("character.html", all_characters=all_characters)
 
 
 # EXAMPLE OF POST REQUEST
