@@ -122,7 +122,12 @@ def login():
     flash("Invalid username or password", "error")
     return render_template("login.html")
 
-
+@app.route("/logout", methods=["POST"])
+def logout():
+    session["logged_in"] = False
+    session.pop("username", None)
+    flash("Logged out successfully", "success")
+    return redirect(url_for("home"))
 
 
 # character list route
