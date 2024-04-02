@@ -22,8 +22,11 @@
     background-color: #d0e1f5;
 }
 
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> 82f404c80b14f626acef3dd6e45938912b7c3c5e
 /* CSS for character.html */
 body {
     font-family: Arial, sans-serif;
@@ -67,3 +70,7 @@ tbody tr:nth-child(even) {
 tbody tr:hover {
     background-color: #ddd;
 }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 82f404c80b14f626acef3dd6e45938912b7c3c5e
