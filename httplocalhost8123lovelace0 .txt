@@ -1,2 +1,0 @@
-http://localhost:8123/lovelace/0 
-Website to access homeassistant.
