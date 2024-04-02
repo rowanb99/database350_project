@@ -68,6 +68,27 @@ def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
     cursor.close()
     conn.close()
 
+def getCharacterID(firstname, lastname):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT CharacterID FROM characters WHERE CharacterFName = %s AND CharacterLName = %s"
+    cursor.execute(query, (firstname, lastname))
+    result = cursor.fetchone()
+    conn.close()
+    if result:
+        return result[0]  # Return the first column of the first row
+    else:
+        return None  # Return None if character not found
+
+def get_character(character_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness FROM characters WHERE CharacterID = %s"
+    cursor.execute(query, (character_id))
+    result = cursor.fetchone()
+    conn.close()
+    return result
+
 
 
 # ------------------------ END FUNCTIONS ------------------------ #
@@ -104,6 +125,12 @@ def login():
 
 
 
+# character list route
+@app.route("/characters", methods=["GET"])
+def view_all_characters():
+    # Retrieve all characters from the database
+    all_characters = get_all_chars()
+    return render_template("character.html", all_characters=all_characters)
 
 
 # EXAMPLE OF POST REQUEST
