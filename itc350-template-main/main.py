@@ -1,7 +1,9 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import mysql.connector
 from dotenv import load_dotenv
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -45,6 +47,18 @@ def get_all_chars():
     result = cursor.fetchall()
     conn.close()
     return result
+
+def get_all_users():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT Username, UserPassword FROM user"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+
+
 def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -63,9 +77,31 @@ def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
 # EXAMPLE OF GET REQUEST
 @app.route("/", methods=["GET"])
 def home():
-    items = get_all_items()  # Call defined function to get all items
-    chars = get_all_chars()
-    return render_template("index.html", items=items, chars=chars) #return the page to be rendered
+
+    if not session.get("logged_in"):
+        return render_template("login.html")
+    else:
+        items = get_all_items()  # Call defined function to get all items
+        chars = get_all_chars()
+        return render_template("index.html", items=items, chars=chars) #return the page to be rendered
+@app.route("/login", methods=["POST"])
+def login():
+
+    users = get_all_users()
+    data = request.form
+    username = data["username"]
+    password = data["password"]
+    for user in users:
+        if user[0] == username and user[1] == password:
+            session["logged_in"] = True
+            session["username"] = username
+            flash("Login successful", "success")
+            return redirect(url_for("home"))
+
+    flash("Invalid username or password", "error")
+    return render_template("login.html")
+
+
 
 
 
