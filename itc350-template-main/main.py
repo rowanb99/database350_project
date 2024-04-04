@@ -67,7 +67,7 @@ def get_all_users():
     return result
 
 
-def insertUser(firstname, lastname, username, email, password):
+def insert_user(firstname, lastname, username, email, password):
     conn = get_db_connection()
     cursor = conn.cursor()
     hashed_password = hash_password(password)
@@ -78,18 +78,19 @@ def insertUser(firstname, lastname, username, email, password):
     conn.close()
 
 
-def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
+def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness):
     conn = get_db_connection()
     cursor = conn.cursor()
-    #TODO Fix this so you include default values (foreign keys)
-    query = "INSERT INTO characters (CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness) VALUES (%s, %s, %s, %s, %s, %s)"
+    # TODO Fix this so you include default values (foreign keys)
+    query = ("INSERT INTO characters (CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, "
+             "CharacterSmartness, CharacterSpeediness) VALUES (%s, %s, %s, %s, %s, %s)")
     cursor.execute(query, (firstname, lastname, beefiness, buffness, smartness, speediness))
     conn.commit()
     cursor.close()
     conn.close()
 
 
-def getCharacterID(firstname, lastname):
+def get_character_id(firstname, lastname):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT CharacterID FROM characters WHERE CharacterFName = %s AND CharacterLName = %s"
@@ -147,7 +148,7 @@ def home():
 
 @app.route("/login", methods=["POST"])
 def login():
-    users = get_all_users()
+
     data = request.form
     username = data["username"]
     password = data["password"]
@@ -184,17 +185,17 @@ def register():
 
             users = get_all_users()
 
-            existingUsers = [user[0] for user in users]
-            if username in existingUsers:
+            existing_users = [user[0] for user in users]
+            if username in existing_users:
                 flash("Username already exists. Please choose a different one.", "warning")
                 return render_template("register.html")
 
-            existingEmail = [user[2] for user in users]
-            if email in existingEmail:
+            existing_email = [user[2] for user in users]
+            if email in existing_email:
                 flash("Email already exists. Please choose a different one.", "warning")
                 return render_template("register.html")
 
-            insertUser(firstname, lastname, username, email, password)
+            insert_user(firstname, lastname, username, email, password)
             session["logged_in"] = True
             session["username"] = username
 
@@ -229,7 +230,7 @@ def create_char():
         char_smartness = data["smartness"]
         char_speediness = data["speediness"]
 
-        insertChar(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness)
+        insert_char(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness)
 
         # TODO: Insert this data into the database
 
