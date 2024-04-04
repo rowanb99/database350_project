@@ -4,7 +4,6 @@ import mysql.connector
 from dotenv import load_dotenv
 import bcrypt
 
-
 # Load environment variables from .env file
 load_dotenv()
 
@@ -13,12 +12,11 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET")
 
 
-
-
 def hash_password(password):
     salt = bcrypt.gensalt()  # Generate a salt
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)  # Hash the password
     return hashed_password
+
 
 # ------------------------ BEGIN FUNCTIONS ------------------------ #
 # Function to retrieve DB connection
@@ -38,7 +36,8 @@ def get_all_items():
     conn = get_db_connection()  # Create a new database connection
     cursor = conn.cursor()  # Creates a cursor for the connection, you need this to do queries
     # Query the db
-    query = "SELECT ItemName, ItemCost, ItemBaseDamage, ItemBeefynessBonus,ItemSmartnessBonus, ItemSpeedinessBonus FROM item"
+    query = ("SELECT ItemName, ItemCost, ItemBaseDamage, ItemBeefynessBonus,ItemSmartnessBonus, ItemSpeedinessBonus "
+             "FROM item")
     cursor.execute(query)
     # Get result and close
     result = cursor.fetchall()  # Gets result from query
@@ -46,14 +45,17 @@ def get_all_items():
     # (NOTE: You should do this after each query, otherwise your database may become locked)
     return result
 
+
 def get_all_chars():
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness FROM characters"
+    query = ("SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, "
+             "CharacterSpeediness FROM characters")
     cursor.execute(query)
     result = cursor.fetchall()
     conn.close()
     return result
+
 
 def get_all_users():
     conn = get_db_connection()
@@ -63,6 +65,8 @@ def get_all_users():
     result = cursor.fetchall()
     conn.close()
     return result
+
+
 def insertUser(firstname, lastname, username, email, password):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -73,14 +77,17 @@ def insertUser(firstname, lastname, username, email, password):
     cursor.close()
     conn.close()
 
+
 def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
     conn = get_db_connection()
     cursor = conn.cursor()
+    #TODO Fix this so you include default values (foreign keys)
     query = "INSERT INTO characters (CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness) VALUES (%s, %s, %s, %s, %s, %s)"
     cursor.execute(query, (firstname, lastname, beefiness, buffness, smartness, speediness))
     conn.commit()
     cursor.close()
     conn.close()
+
 
 def getCharacterID(firstname, lastname):
     conn = get_db_connection()
@@ -94,16 +101,22 @@ def getCharacterID(firstname, lastname):
     else:
         return None  # Return None if character not found
 
+
 def get_character(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness FROM characters WHERE CharacterID = %s"
-    cursor.execute(query, (character_id))
+    query = ("SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, "
+             "CharacterSmartness, CharacterSpeediness FROM characters WHERE CharacterID = %s")
+    cursor.execute(query, character_id)
     result = cursor.fetchone()
     conn.close()
     return result
+
+
 def verify_password(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
+
+
 def verify_login(username, password):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -119,7 +132,6 @@ def verify_login(username, password):
     return False
 
 
-
 # ------------------------ END FUNCTIONS ------------------------ #
 
 
@@ -127,15 +139,14 @@ def verify_login(username, password):
 # EXAMPLE OF GET REQUEST
 @app.route("/", methods=["GET"])
 def home():
-
     if not session.get("logged_in"):
         return render_template("login.html")
     else:
-        return render_template("index.html") #return the page to be rendered
+        return render_template("index.html")  # return the page to be rendered
+
 
 @app.route("/login", methods=["POST"])
 def login():
-
     users = get_all_users()
     data = request.form
     username = data["username"]
@@ -151,12 +162,15 @@ def login():
         flash("Invalid username or password", "error")
         return render_template("login.html")
 
+
 @app.route("/logout", methods=["POST"])
 def logout():
     session["logged_in"] = False
     session.pop("username", None)
     flash("Logged out successfully", "success")
     return redirect(url_for("home"))
+
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "POST":
@@ -180,7 +194,6 @@ def register():
                 flash("Email already exists. Please choose a different one.", "warning")
                 return render_template("register.html")
 
-
             insertUser(firstname, lastname, username, email, password)
             session["logged_in"] = True
             session["username"] = username
@@ -193,8 +206,6 @@ def register():
             return redirect(url_for("register"))
     else:
         return render_template("register.html")
-
-
 
 
 # character list route
@@ -220,11 +231,7 @@ def create_char():
 
         insertChar(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness)
 
-
-
         # TODO: Insert this data into the database
-
-
 
         # Send message to page. There is code in index.html that checks for these messages
         flash("Item added successfully", "success")
