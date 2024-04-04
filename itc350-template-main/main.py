@@ -51,13 +51,19 @@ def get_all_chars():
 def get_all_users():
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT Username, UserPassword FROM user"
+    query = "SELECT Username, UserPassword, UserEmail FROM user"
     cursor.execute(query)
     result = cursor.fetchall()
     conn.close()
     return result
-
-
+def insertUser(firstname, lastname, username, email, password):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "INSERT INTO user (UserFName, UserLName, UserEmail, UserPassword, Username) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(query, (firstname, lastname, email, password, username))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
     conn = get_db_connection()
@@ -105,6 +111,7 @@ def home():
         items = get_all_items()  # Call defined function to get all items
         chars = get_all_chars()
         return render_template("index.html", items=items, chars=chars) #return the page to be rendered
+
 @app.route("/login", methods=["POST"])
 def login():
 
@@ -128,6 +135,44 @@ def logout():
     session.pop("username", None)
     flash("Logged out successfully", "success")
     return redirect(url_for("home"))
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        try:
+            data = request.form
+            firstname = data["firstname"]
+            lastname = data["lastname"]
+            username = data["username"]
+            email = data["email"]
+            password = data["password"]
+
+            users = get_all_users()
+
+            existingUsers = [user[0] for user in users]
+            if username in existingUsers:
+                flash("Username already exists. Please choose a different one.", "warning")
+                return render_template("register.html")
+
+            existingEmail = [user[2] for user in users]
+            if email in existingEmail:
+                flash("Email already exists. Please choose a different one.", "warning")
+                return render_template("register.html")
+
+
+            insertUser(firstname, lastname, username, email, password)
+            session["logged_in"] = True
+            session["username"] = username
+
+            flash("Registration successful. You have been automatically logged in.", "success")
+            return redirect(url_for("home"))
+
+        except Exception as e:
+            flash(f"An error occurred during registration: {str(e)}", "error")
+            return redirect(url_for("register"))
+    else:
+        return render_template("register.html")
+
+
 
 
 # character list route
