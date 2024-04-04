@@ -1,7 +1,9 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 import mysql.connector
 from dotenv import load_dotenv
+
+
 
 # Load environment variables from .env file
 load_dotenv()
@@ -45,6 +47,24 @@ def get_all_chars():
     result = cursor.fetchall()
     conn.close()
     return result
+
+def get_all_users():
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT Username, UserPassword, UserEmail FROM user"
+    cursor.execute(query)
+    result = cursor.fetchall()
+    conn.close()
+    return result
+def insertUser(firstname, lastname, username, email, password):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "INSERT INTO user (UserFName, UserLName, UserEmail, UserPassword, Username) VALUES (%s, %s, %s, %s, %s)"
+    cursor.execute(query, (firstname, lastname, email, password, username))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -69,6 +89,27 @@ def getInventory(characterID):
     query = "SELECT * FROM Inventory WHERE CharacterID=%s"
     cursor.execute(query, (characterID,))
     result = cursor.fetchall()
+    conn.close()
+    return result
+
+def getCharacterID(firstname, lastname):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT CharacterID FROM characters WHERE CharacterFName = %s AND CharacterLName = %s"
+    cursor.execute(query, (firstname, lastname))
+    result = cursor.fetchone()
+    conn.close()
+    if result:
+        return result[0]  # Return the first column of the first row
+    else:
+        return None  # Return None if character not found
+
+def get_character(character_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness FROM characters WHERE CharacterID = %s"
+    cursor.execute(query, (character_id))
+    result = cursor.fetchone()
     conn.close()
     return result
 
@@ -99,7 +140,6 @@ def unequip(characterID):
     cursor.close()
     conn.close()
 
-
 # ------------------------ END FUNCTIONS ------------------------ #
 
 
@@ -107,9 +147,74 @@ def unequip(characterID):
 # EXAMPLE OF GET REQUEST
 @app.route("/", methods=["GET"])
 def home():
-    items = get_all_items()  # Call defined function to get all items
-    chars = get_all_chars()
-    return render_template("index.html", items=items, chars=chars) #return the page to be rendered
+
+    if not session.get("logged_in"):
+        return render_template("login.html")
+    else:
+        return render_template("index.html") #return the page to be rendered
+
+@app.route("/login", methods=["POST"])
+def login():
+
+    users = get_all_users()
+    data = request.form
+    username = data["username"]
+    password = data["password"]
+    for user in users:
+        if user[0] == username and user[1] == password:
+            session["logged_in"] = True
+            session["username"] = username
+            flash("Login successful", "success")
+            return redirect(url_for("home"))
+
+    flash("Invalid username or password", "error")
+    return render_template("login.html")
+
+@app.route("/logout", methods=["POST"])
+def logout():
+    session["logged_in"] = False
+    session.pop("username", None)
+    flash("Logged out successfully", "success")
+    return redirect(url_for("home"))
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    if request.method == "POST":
+        try:
+            data = request.form
+            firstname = data["firstname"]
+            lastname = data["lastname"]
+            username = data["username"]
+            email = data["email"]
+            password = data["password"]
+
+            users = get_all_users()
+
+            existingUsers = [user[0] for user in users]
+            if username in existingUsers:
+                flash("Username already exists. Please choose a different one.", "warning")
+                return render_template("register.html")
+
+            existingEmail = [user[2] for user in users]
+            if email in existingEmail:
+                flash("Email already exists. Please choose a different one.", "warning")
+                return render_template("register.html")
+
+
+            insertUser(firstname, lastname, username, email, password)
+            session["logged_in"] = True
+            session["username"] = username
+
+            flash("Registration successful. You have been automatically logged in.", "success")
+            return redirect(url_for("home"))
+
+        except Exception as e:
+            flash(f"An error occurred during registration: {str(e)}", "error")
+            return redirect(url_for("register"))
+    else:
+        return render_template("register.html")
+
+
+
 
 # character list route
 @app.route("/characters", methods=["GET"])

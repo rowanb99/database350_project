@@ -48,21 +48,9 @@
         <!-- Submit Button -->
         <input type="submit" value="Submit">
     </form>
-
-    <!-- Code for listing owned items -->
-    <h2>List of Total Items</h2>
-    <ul>
-        <!-- This is some python jinja2 code. Only existing items will be displayed. -->
-        {% for item in items %}
-            <li>Name: {{ item[0] }} - Cost: {{ item[1] }} - Damage: {{ item[2] }} - BeefinessBonus: {{ item[3] }} -  SmartnessBonus: {{ item[4] }} - SpeedinessBonus: {{ item[5] }} </li>
-        {% endfor %}
-    </ul>
-
-    <h2> List of Total Chars</h2>
-    <ul>
-        {% for char in chars %}
-            <li>Name: {{ char[0] }} {{ char[1] }} - Character Beefiness: {{ char[2] }} - CharacterBuffness {{ char[3] }} -  CharacterSmartness: {{ char[4] }} - CharacterSpeediness {{ char[5] }} </li>
-        {% endfor %}
-    </ul>
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+    
 </body>
 </html>
