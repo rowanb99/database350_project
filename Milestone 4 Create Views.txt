@@ -46,7 +46,7 @@ CREATE VIEW Inventory AS
 SELECT
 characters.CharacterID, CharacterFName,
 CharacterSmartness, CharacterBuffness, CharacterBeefyness, CharacterSpeediness,
-ItemName, ItemCost,
+item.ItemID, ItemName, ItemCost,
 ItemSmartnessBonus, ItemBeefynessBonus, ItemSpeedinessBonus
 FROM character_inventory
 LEFT JOIN item
