@@ -27,7 +27,7 @@ def get_db_connection():
 def get_all_items():
     # Create a new database connection for each request
     conn = get_db_connection()  # Create a new database connection
-    cursor = conn.cursor()  # Creates a cursor for the connection, you need this to do queries
+    cursor = conn.cursor(buffered=True)  # Creates a cursor for the connection, you need this to do queries
     # Query the db
     query = "SELECT ItemName, ItemCost, ItemBaseDamage, ItemBeefynessBonus,ItemSmartnessBonus, ItemSpeedinessBonus FROM item"
     cursor.execute(query)
@@ -53,7 +53,51 @@ def insertChar(firstname, lastname, beefiness, buffness, smartness, speediness):
     conn.commit()
     cursor.close()
     conn.close()
+    
+def getChar(characterID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM CharacterInfo WHERE CharacterID=%s"
+    cursor.execute(query, (characterID,))
+    result = cursor.fetchall()
+    conn.close()
+    return result
+    
+def getInventory(characterID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM Inventory WHERE CharacterID=%s"
+    cursor.execute(query, (characterID,))
+    result = cursor.fetchall()
+    conn.close()
+    return result
 
+def getEquipped(characterID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT EquippedItemID FROM characters WHERE CharacterID=%s"
+    cursor.execute(query, (characterID,))
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+def equip(characterID, itemID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "UPDATE characters SET EquippedItemID=%s WHERE CharacterID=%s"
+    cursor.execute(query, (itemID, characterID))
+    conn.commit()
+    cursor.close()
+    conn.close()
+    
+def unequip(characterID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "UPDATE characters SET EquippedItemID=NULL WHERE CharacterID=%s"
+    cursor.execute(query, (characterID,))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 
 # ------------------------ END FUNCTIONS ------------------------ #
@@ -74,6 +118,25 @@ def view_all_characters():
     all_characters = get_all_chars()
     return render_template("character.html", all_characters=all_characters)
 
+#character's inventory page route
+@app.route("/character/inventory", methods=["GET"])
+def get_character_inventory():
+    return render_template("character_inventory.html", inventory=getInventory(request.args.get('charID')), equippedItem=getEquipped(request.args.get('charID'))[0], character=getChar(request.args.get('charID'))[0])
+    
+#equip an item
+@app.route("/character/inventory/equip", methods=["POST"])
+def equip_item(): 
+    data = request.form
+    equip(data["charID"], data["itemID"])
+    return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
+
+#unequip an item
+@app.route("/character/inventory/unequip", methods=["POST"])
+def unequip_item(): 
+    data = request.form
+    unequip(data["charID"])
+    return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
+    
 
 # EXAMPLE OF POST REQUEST
 @app.route("/new-item", methods=["POST"])

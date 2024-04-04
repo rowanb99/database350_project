@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventory</title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+</head>
+<body>
+    <!-- Show error or success messages if there are any -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Check to see if there are any messages to show -->
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="alert {{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h1>{{inventory[0][1]}}'s Inventory</h1>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Item Name</th>
+                <th>Item Cost</th>
+                <th>Beefyness</th>
+                <th>Smartness</th>
+                <th>Speediness</th>
+                <th>Equip</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in inventory %}
+            <tr>
+                <td>{{ item[7] }}</td>
+                <td>{{ item[8] }}</td>
+                <td>{{ item[9] }}</td>
+                <td>{{ item[10] }}</td>
+                <td>{{ item[11] }}</td>
+                <td>
+                    {% if item[6] == equippedItem[0] %}
+                    <form action="/character/inventory/unequip" method="post">
+                        <input type="text" id="charID" name="charID" value="{{item[0]}}" required hidden>
+                        <input type="submit" value="Unequip">
+                    </form>
+
+                    {% else %}
+                    <form action="/character/inventory/equip" method="post">
+                        <input type="text" id="charID" name="charID" value="{{item[0]}}" required hidden>
+                        <input type="text" id="itemID" name="itemID" value="{{item[6]}}" required hidden>
+                        <input type="submit" value="Equip">
+                    </form>
+
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+    <h1>{{inventory[0][1]}}'s Stats with Current Item</h1>
+    {% if equippedItem[0] != None %}
+    <ul>
+        <li>Smartness: {{ character[4] + character[9] + character[14] + character[19] }}</li> 
+        <li>Buffness {{ character[5] + character[10] + character[15] }}</li>
+        <li>Beefyness: {{ character[6] + character[11] + character[16] + character[20] }}</li>
+        <li>Speediness {{ character[7] + character[12] + character[17] + character[21] }}</li>
+    </ul>
+
+    {% else %}
+    <div>No item equipped.</div>
+
+    {% endif %}
+
+</body>
+
+</html>
