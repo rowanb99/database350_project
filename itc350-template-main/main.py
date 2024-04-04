@@ -2,7 +2,7 @@ import os
 from flask import Flask, render_template, request, redirect, url_for, flash, session
 import mysql.connector
 from dotenv import load_dotenv
-
+import bcrypt
 
 
 # Load environment variables from .env file
@@ -12,6 +12,13 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET")
 
+
+
+
+def hash_password(password):
+    salt = bcrypt.gensalt()  # Generate a salt
+    hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)  # Hash the password
+    return hashed_password
 
 # ------------------------ BEGIN FUNCTIONS ------------------------ #
 # Function to retrieve DB connection
@@ -59,8 +66,9 @@ def get_all_users():
 def insertUser(firstname, lastname, username, email, password):
     conn = get_db_connection()
     cursor = conn.cursor()
+    hashed_password = hash_password(password)
     query = "INSERT INTO user (UserFName, UserLName, UserEmail, UserPassword, Username) VALUES (%s, %s, %s, %s, %s)"
-    cursor.execute(query, (firstname, lastname, email, password, username))
+    cursor.execute(query, (firstname, lastname, email, hashed_password, username))
     conn.commit()
     cursor.close()
     conn.close()
@@ -94,6 +102,21 @@ def get_character(character_id):
     result = cursor.fetchone()
     conn.close()
     return result
+def verify_password(password, hashed_password):
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
+def verify_login(username, password):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT UserPassword FROM user WHERE Username = %s"
+    cursor.execute(query, (username,))
+    hashed_password = cursor.fetchone()
+    conn.close()
+    if hashed_password:
+        hashed_password = hashed_password[0]
+        # Hash the provided password and compare it to the stored hashed password
+        if verify_password(password, hashed_password.encode('utf-8')):  # Ensure hashed_password is encoded
+            return True
+    return False
 
 
 
@@ -119,15 +142,16 @@ def login():
     data = request.form
     username = data["username"]
     password = data["password"]
-    for user in users:
-        if user[0] == username and user[1] == password:
-            session["logged_in"] = True
-            session["username"] = username
-            flash("Login successful", "success")
-            return redirect(url_for("home"))
 
-    flash("Invalid username or password", "error")
-    return render_template("login.html")
+    right_password = verify_login(username, password)
+    if right_password:
+        session["logged_in"] = True
+        session["username"] = username
+        flash("Login successful", "success")
+        return redirect(url_for("home"))
+    else:
+        flash("Invalid username or password", "error")
+        return render_template("login.html")
 
 @app.route("/logout", methods=["POST"])
 def logout():
