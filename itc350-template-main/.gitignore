@@ -164,4 +164,4 @@ cython_debug/
 #.idea/
 
 # Other stuff
-vscode_compliant_db/testing.sql
+vscode_compliant_db\testing.sql
