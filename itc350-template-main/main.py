@@ -131,9 +131,7 @@ def home():
     if not session.get("logged_in"):
         return render_template("login.html")
     else:
-        items = get_all_items()  # Call defined function to get all items
-        chars = get_all_chars()
-        return render_template("index.html", items=items, chars=chars) #return the page to be rendered
+        return render_template("index.html") #return the page to be rendered
 
 @app.route("/login", methods=["POST"])
 def login():
