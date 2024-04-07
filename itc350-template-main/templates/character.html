@@ -5,6 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>List of All Characters</title>
     <link rel="stylesheet" href="static/css/styles.css">
+    <script>
+        function toggleAttributes(characterId) {
+            var attributes = document.getElementById('attributes-' + characterId);
+            attributes.classList.toggle('hidden');
+        }
+    </script>
+    <style>
+        .hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
     <!-- Show error or success messages if there are any -->
@@ -24,10 +35,7 @@
             <tr>
                 <th>First Name</th>
                 <th>Last Name</th>
-                <th>Beefiness</th>
-                <th>Buffness</th>
-                <th>Smartness</th>
-                <th>Speediness</th>
+                <th>Show All Attributes</th>
             </tr>
         </thead>
         <tbody>
@@ -35,10 +43,15 @@
             <tr>
                 <td>{{ character[0] }}</td>
                 <td>{{ character[1] }}</td>
-                <td>{{ character[2] }}</td>
-                <td>{{ character[3] }}</td>
-                <td>{{ character[4] }}</td>
-                <td>{{ character[5] }}</td>
+                <td><button onclick="toggleAttributes('{{ character[0] }}')">Show All Attributes</button></td>
+            </tr>
+            <tr id="attributes-{{ character[0] }}" class="hidden">
+                <td colspan="3">
+                    <strong>Beefiness:</strong> {{ character[2] }}<br>
+                    <strong>Buffness:</strong> {{ character[3] }}<br>
+                    <strong>Smartness:</strong> {{ character[4] }}<br>
+                    <strong>Speediness:</strong> {{ character[5] }}
+                </td>
             </tr>
             {% endfor %}
         </tbody>
