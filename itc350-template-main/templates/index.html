@@ -19,38 +19,70 @@
 
     <!-- Code for adding a new item -->
     <h2>Add New Character</h2>
-    <form action="/new-item" method="post">
-        <!-- First Name -->
-        <label for="firstname">First Name:</label>
-        <input type="text" id="firstname" name="firstname" required>
-        <br>
-        <!-- Last Name -->
-        <label for="lastname">Last Name:</label>
-        <input type="text" id="lastname" name="lastname" required>
-        <br>
-        <!-- Beefiness -->
-        <label for="beefiness">Beefiness:</label>
-        <input type="number" id="beefiness" name="beefiness" required>
-        <br>
-        <!-- Buffness -->
-        <label for="buffness">Buffness:</label>
-        <input type="number" id="buffness" name="buffness" required>
-        <br>
-        <!-- Smartness -->
-        <label for="smartness">Smartness:</label>
-        <input type="number" id="smartness" name="smartness" required>
-        <br>
-        <!-- Speediness -->
-        <label for="speediness">Speediness:</label>
-        <input type="number" id="speediness" name="speediness" required>
-        <br>
+<form action="/new-character" method="post">
+    <!-- First Name -->
+    <label for="firstname">First Name:</label>
+    <input type="text" id="firstname" name="firstname" required>
+    <br>
+    <!-- Last Name -->
+    <label for="lastname">Last Name:</label>
+    <input type="text" id="lastname" name="lastname" required>
+    <br>
+    <!-- Beefiness -->
+    <label for="beefiness">Beefiness:</label>
+    <input type="number" id="beefiness" name="beefiness" required>
+    <br>
+    <!-- Buffness -->
+    <label for="buffness">Buffness:</label>
+    <input type="number" id="buffness" name="buffness" required>
+    <br>
+    <!-- Smartness -->
+    <label for="smartness">Smartness:</label>
+    <input type="number" id="smartness" name="smartness" required>
+    <br>
+    <!-- Speediness -->
+    <label for="speediness">Speediness:</label>
+    <input type="number" id="speediness" name="speediness" required>
+    <br>
+    <!-- Race -->
+    <label for="race">Race:</label>
+    <select id="race" name="race" required>
+        <option value="">Select a race</option>
+        <option value="1">Human</option>
+        <option value="2">Elf</option>
+        <option value="3">Dwarf</option>
+        <option value="4">Orc</option>
+        <option value="5">Halfling</option>
+        <option value="6">Gnome</option>
+        <option value="7">Dragonborn</option>
+        <option value="8">Tiefling</option>
+        <option value="9">Half-Orc</option>
+        <option value="10">Half-Elf</option>
+    </select>
+    <br>
+    <!-- Class -->
+    <label for="class">Class:</label>
+    <select id="class" name="class" required>
+        <option value="">Select a class</option>
+        <option value="1">Warrior</option>
+        <option value="2">Mage</option>
+        <option value="3">Rogue</option>
+        <option value="4">Priest</option>
+        <option value="5">Paladin</option>
+        <option value="6">Ranger</option>
+        <option value="7">Barbarian</option>
+        <option value="8">Bard</option>
+        <option value="9">Sorcerer</option>
+        <option value="10">Monk</option>
+    </select>
+    <br>
+    <!-- Submit Button -->
+    <input type="submit" value="Submit">
+</form>
+<form action="/logout" method="post">
+    <button type="submit">Logout</button>
+</form>
 
-        <!-- Submit Button -->
-        <input type="submit" value="Submit">
-    </form>
-    <form action="/logout" method="post">
-        <button type="submit">Logout</button>
-    </form>
     
 </body>
 </html>

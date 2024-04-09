@@ -86,7 +86,7 @@ SELECT ItemCost, ItemName, ItemSpeedinessBonus, ItemSmartnessBonus, ItemBeefynes
 FROM item;
 
 CREATE VIEW CharacterInfo AS
-SELECTUserID, CharacterID, CharacterFName, CharacterLName,
+SELECT UserID, CharacterID, CharacterFName, CharacterLName,
 CharacterSmartness, CharacterBuffness, CharacterBeefyness, CharacterSpeediness,
 ClassName,
 ClassSmartnessBonus, ClassBuffnessBonus, ClassBeefynessBonus, ClassSpeedinessBonus,
