@@ -22,12 +22,13 @@
     <table>
         <thead>
             <tr>
-                <th>Item Name</th>
-                <th>Item Cost</th>
+                <th>Name</th>
+                <th>Cost</th>
                 <th>Beefyness</th>
                 <th>Smartness</th>
                 <th>Speediness</th>
                 <th>Equip</th>
+                <th>Sell</th>
             </tr>
         </thead>
 
@@ -55,6 +56,14 @@
 
                     {% endif %}
                 </td>
+                <td>
+                    <form action="/character/inventory/sell" method="post">
+                        <input type="text" id="charID" name="charID" value="{{item[0]}}" required hidden>
+                        <input type="text" id="itemID" name="itemID" value="{{item[6]}}" required hidden>
+                        <input type="text" id="cost" name="cost" value="{{item[8]}}" required hidden>
+                        <input type="submit" value="Sell">
+                    </form>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -74,6 +83,13 @@
     <div>No item equipped.</div>
 
     {% endif %}
+
+    <div></div>
+
+    <form action="/redirect/store" method="get">
+        <input type="text" id="charID" name="charID" value="{{inventory[0][0]}}" required hidden>
+        <input type="submit" value="Enter Shop">
+    </form>
 
 </body>
 

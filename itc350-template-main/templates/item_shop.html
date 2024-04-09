@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Item Shop</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- Show error or success messages if there are any -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        <!-- Check to see if there are any messages to show -->
+        {% if messages %}
+            {% for category, message in messages %}
+                <p class="alert {{ category }}">{{ message }}</p>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+
+    <h1>Item Shop</h1>
+    
+    <div></div>
+    
+    <h2>{{ character[2] }}'s Purse: {{ characterPurse }}</h2>
+
+    <div></div>
+
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Cost</th>
+                <th>Beefyness</th>
+                <th>Smartness</th>
+                <th>Speediness</th>
+                <th>Purchase</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            {% for item in shop %}
+            <tr>
+                <td>{{ item[0] }}</td>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[3] }}</td>
+                <td>{{ item[4] }}</td>
+                <td>{{ item[5] }}</td>
+                <td>
+                    <form action="/character/inventory/store/purchase" method="post">
+                        <input type="text" id="charID" name="charID" value="{{character[1]}}" required hidden>
+                        <input type="text" id="itemID" name="itemID" value="{{item[6]}}" required hidden>
+                        <input type="text" id="cost" name="cost" value="{{item[1]}}" required hidden>
+                        <input type="submit" value="Purchase">
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+
+    </table>
+
+</body>
+
+</html>

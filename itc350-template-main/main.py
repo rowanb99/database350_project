@@ -36,7 +36,7 @@ def get_all_items():
     conn = get_db_connection()  # Create a new database connection
     cursor = conn.cursor(buffered=True)  # Creates a cursor for the connection, you need this to do queries
     # Query the db
-    query = ("SELECT ItemName, ItemCost, ItemBaseDamage, ItemBeefynessBonus,ItemSmartnessBonus, ItemSpeedinessBonus "
+    query = ("SELECT ItemName, ItemCost, ItemBaseDamage, ItemBeefynessBonus,ItemSmartnessBonus, ItemSpeedinessBonus, ItemID "
              "FROM item")
     cursor.execute(query)
     # Get result and close
@@ -176,6 +176,58 @@ def verify_login(username, password):
             return True
     return False
 
+def getPurse(characterID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT CharacterPurse FROM characters WHERE CharacterID=%s"
+    cursor.execute(query, (characterID,))
+    result = cursor.fetchall()
+    conn.close()
+    return result
+
+def checkInventory(charID, itemID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT * FROM character_inventory WHERE CharacterID=%s AND ItemID=%s"
+    cursor.execute(query, (charID, itemID))
+    result = cursor.fetchall()
+    conn.close()
+    if not result:
+        return False
+    return True
+
+def purchaseItem(charID, itemID, cost):
+    charPurse = int(getPurse(charID)[0][0])
+    cost = int(cost)
+    print(charPurse)
+    print(cost)
+    if (charPurse - cost >= 0) and (not checkInventory(charID, itemID)):
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        query = "UPDATE characters SET CharacterPurse=%s WHERE CharacterID=%s"
+        cursor.execute(query, (charPurse - cost, charID))
+        conn.commit()
+        query = "INSERT INTO character_inventory(ItemID, CharacterID) VALUES (%s, %s)"
+        cursor.execute(query, (itemID, charID))
+        conn.commit()
+        cursor.close()
+        conn.close()
+
+def sellItem(charID, itemID, cost):
+    charPurse = int(getPurse(charID)[0][0])
+    cost = int(cost)
+    print(charPurse)
+    print(cost)
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "UPDATE characters SET CharacterPurse=%s WHERE CharacterID=%s"
+    cursor.execute(query, (charPurse + cost, charID))
+    conn.commit()
+    query = "DELETE FROM character_inventory WHERE ItemID=%s AND CharacterID=%s"
+    cursor.execute(query, (itemID, charID))
+    conn.commit()
+    cursor.close()
+    conn.close()
 
 # ------------------------ END FUNCTIONS ------------------------ #
 
@@ -277,6 +329,30 @@ def equip_item():
 def unequip_item(): 
     data = request.form
     unequip(data["charID"])
+    return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
+
+#redirect to store
+@app.route("/redirect/store", methods=["GET"])
+def redirect_store():
+    return redirect(url_for("get_character_inventory") + "?charID=" + request.form["charID"])
+
+#item store
+@app.route("/character/inventory/store", methods=["GET"])
+def enter_store():
+    return render_template("item_shop.html", shop=get_all_items(), character=getChar(request.args.get('charID'))[0], characterPurse=getPurse(request.args.get('charID'))[0][0] )
+
+#purchase an item
+@app.route("/character/inventory/store/purchase", methods=["POST"])
+def purchase_item():
+    data = request.form
+    purchaseItem(data["charID"], data["itemID"], data["cost"])
+    return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
+
+#sell an item
+@app.route("/character/inventory/sell", methods=["POST"])
+def sell_item():
+    data = request.form
+    sellItem(data["charID"], data["itemID"], data["cost"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
     
 
