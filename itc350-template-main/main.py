@@ -78,17 +78,19 @@ def insert_user(firstname, lastname, username, email, password):
     conn.close()
 
 
-def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness):
+def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness, user_id, class_id, race_id):
+    print("User ID:", user_id)  # Print user ID for debugging
     conn = get_db_connection()
     cursor = conn.cursor()
-    # TODO Fix this so you include default values (foreign keys)
     query = ("INSERT INTO characters (CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, "
-             "CharacterSmartness, CharacterSpeediness) VALUES (%s, %s, %s, %s, %s, %s)")
-    cursor.execute(query, (firstname, lastname, beefiness, buffness, smartness, speediness))
+             "CharacterSmartness, CharacterSpeediness, UserID, ClassID, RaceID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
+    cursor.execute(query, (firstname, lastname, beefiness, buffness, smartness, speediness, user_id, class_id, race_id))
     conn.commit()
     cursor.close()
     conn.close()
-    
+
+
+
 def getChar(characterID):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -97,7 +99,8 @@ def getChar(characterID):
     result = cursor.fetchall()
     conn.close()
     return result
-    
+
+
 def getInventory(characterID):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -131,6 +134,7 @@ def get_character(character_id):
     conn.close()
     return result
 
+
 def getEquipped(characterID):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -140,6 +144,7 @@ def getEquipped(characterID):
     conn.close()
     return result
 
+
 def equip(characterID, itemID):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -148,7 +153,8 @@ def equip(characterID, itemID):
     conn.commit()
     cursor.close()
     conn.close()
-    
+
+
 def unequip(characterID):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -157,7 +163,8 @@ def unequip(characterID):
     conn.commit()
     cursor.close()
     conn.close()
-    
+
+
 def verify_password(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
 
@@ -229,6 +236,16 @@ def sellItem(charID, itemID, cost):
     cursor.close()
     conn.close()
 
+def get_user_id(username):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT UserID FROM user WHERE Username = %s"
+    cursor.execute(query, (username,))
+    result = cursor.fetchone()[0]
+    conn.close()
+    return result
+
+
 # ------------------------ END FUNCTIONS ------------------------ #
 
 
@@ -244,20 +261,26 @@ def home():
 
 @app.route("/login", methods=["POST"])
 def login():
-
     data = request.form
     username = data["username"]
     password = data["password"]
 
     right_password = verify_login(username, password)
     if right_password:
-        session["logged_in"] = True
-        session["username"] = username
-        flash("Login successful", "success")
-        return redirect(url_for("home"))
+        user_id = get_user_id(username)
+        if user_id:
+            session["logged_in"] = True
+            session["username"] = username
+            session["user_id"] = user_id  # Store user ID in session
+            flash("Login successful", "success")
+            return redirect(url_for("home"))
+        else:
+            flash("Failed to retrieve user ID", "error")
+            return render_template("login.html")
     else:
         flash("Invalid username or password", "error")
         return render_template("login.html")
+
 
 
 @app.route("/logout", methods=["POST"])
@@ -292,8 +315,11 @@ def register():
                 return render_template("register.html")
 
             insert_user(firstname, lastname, username, email, password)
+            user_id = get_user_id(username)
             session["logged_in"] = True
             session["username"] = username
+            session["user_id"] = user_id
+
 
             flash("Registration successful. You have been automatically logged in.", "success")
             return redirect(url_for("home"))
@@ -312,21 +338,26 @@ def view_all_characters():
     all_characters = get_all_chars()
     return render_template("character.html", all_characters=all_characters)
 
-#character's inventory page route
+
+# character's inventory page route
 @app.route("/character/inventory", methods=["GET"])
 def get_character_inventory():
-    return render_template("character_inventory.html", inventory=getInventory(request.args.get('charID')), equippedItem=getEquipped(request.args.get('charID'))[0], character=getChar(request.args.get('charID'))[0])
-    
-#equip an item
+    return render_template("character_inventory.html", inventory=getInventory(request.args.get('charID')),
+                           equippedItem=getEquipped(request.args.get('charID'))[0],
+                           character=getChar(request.args.get('charID'))[0])
+
+
+# equip an item
 @app.route("/character/inventory/equip", methods=["POST"])
-def equip_item(): 
+def equip_item():
     data = request.form
     equip(data["charID"], data["itemID"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
-#unequip an item
+
+# unequip an item
 @app.route("/character/inventory/unequip", methods=["POST"])
-def unequip_item(): 
+def unequip_item():
     data = request.form
     unequip(data["charID"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
@@ -357,7 +388,7 @@ def sell_item():
     
 
 # EXAMPLE OF POST REQUEST
-@app.route("/new-item", methods=["POST"])
+@app.route("/new-character", methods=["POST"])
 def create_char():
     try:
         # Get items from the form
@@ -368,13 +399,16 @@ def create_char():
         char_buffness = data["buffness"]
         char_smartness = data["smartness"]
         char_speediness = data["speediness"]
+        user_id = session.get("user_id")
+        class_id = data["class"]
+        race_id = data["race"]
 
-        insert_char(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness)
+        insert_char(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness, user_id, class_id, race_id)
 
         # TODO: Insert this data into the database
 
         # Send message to page. There is code in index.html that checks for these messages
-        flash("Item added successfully", "success")
+        flash("Character added successfully", "success")
         # Redirect to home. This works because the home route is named home in this file
         return redirect(url_for("home"))
 
@@ -390,4 +424,3 @@ def create_char():
 # listen on port 8080
 if __name__ == "__main__":
     app.run(port=8080, debug=True)  # TODO: Students PLEASE remove debug=True when you deploy this for production!!!!!
-
