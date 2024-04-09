@@ -363,9 +363,10 @@ def unequip_item():
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
 #redirect to store
-@app.route("/redirect/store", methods=["GET"])
+@app.route("/redirect/store", methods=["POST"])
 def redirect_store():
-    return redirect(url_for("get_character_inventory") + "?charID=" + request.form["charID"])
+    data=request.form
+    return redirect(url_for("enter_store") + "?charID=" + data["charID"])
 
 #item store
 @app.route("/character/inventory/store", methods=["GET"])
