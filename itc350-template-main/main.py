@@ -129,7 +129,7 @@ def get_character(character_id):
     cursor = conn.cursor()
     query = ("SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, "
              "CharacterSmartness, CharacterSpeediness FROM characters WHERE CharacterID = %s")
-    cursor.execute(query, character_id)
+    cursor.execute(query, (character_id,))
     result = cursor.fetchone()
     conn.close()
     return result
@@ -330,6 +330,12 @@ def register():
     else:
         return render_template("register.html")
 
+
+# Character Info Page
+@app.route("/characterinfo", methods=["GET"])
+def view_character_stats():
+    charID = request.args.get('charID')
+    return render_template("characterInfo.html", character_stats=get_character(charID))
 
 # character list route
 @app.route("/characters", methods=["GET"])

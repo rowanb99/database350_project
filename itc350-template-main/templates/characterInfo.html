@@ -5,15 +5,15 @@
     <title>Character Information</title>
 </head>
 <body>
-    <h1>{{ character.name }}</h1>
-    <p><strong>Race:</strong> {{ character.race }}</p>
+    <h1>{{ character_stats.name }}</h1>
+    <p><strong>Race:</strong> {{ character_stats.race }}</p>
     <p><strong>Stats:</strong></p>
     <ul>
-        <li><strong>Smartness:</strong> {{ character.smartness }}</li>
-        <li><strong>Buffness:</strong> {{ character.buffness }}</li>
-        <li><strong>Beefyness:</strong> {{ character.beefyness }}</li>
-        <li><strong>Speediness:</strong> {{ character.speediness }}</li>
+        <li><strong>Smartness:</strong> {{ character_stats.smartness }}</li>
+        <li><strong>Buffness:</strong> {{ character_stats.buffness }}</li>
+        <li><strong>Beefyness:</strong> {{ character_stats.beefyness }}</li>
+        <li><strong>Speediness:</strong> {{ character_stats.speediness }}</li>
     </ul>
-    <p><strong>Equipped Item:</strong> {{ character.equipped_item }}</p>
+    <p><strong>Equipped Item:</strong> {{ character_stats.equipped_item }}</p>
 </body>
 </html>
