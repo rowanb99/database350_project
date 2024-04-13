@@ -1,3 +1,17 @@
+.add-character-button {
+    display: inline-block;
+    background-color: #007bff; /* Blue color for the button */
+    color: #fff; /* White text color */
+    padding: 10px 20px; /* Padding for spacing inside the button */
+    text-decoration: none; /* Remove underline from the link */
+    border-radius: 4px; /* Rounded corners for a softer look */
+    transition: background-color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+.add-character-button:hover {
+    background-color: #0056b3; /* Darker blue color when hovered */
+}
+
 .alert {
     padding: 10px; /* Padding for spacing inside the message box */
     margin-bottom: 15px; /* Margin at the bottom to create space between the message and other content */
