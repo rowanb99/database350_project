@@ -245,6 +245,15 @@ def get_user_id(username):
     conn.close()
     return result
 
+def get_user_characters(user_id):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness FROM characters WHERE UserID = %s"
+    cursor.execute(query, (user_id,))
+    user_characters = cursor.fetchall()
+    conn.close()
+    return user_characters
+
 
 # ------------------------ END FUNCTIONS ------------------------ #
 
@@ -337,12 +346,13 @@ def view_character_stats():
     charID = request.args.get('charID')
     return render_template("characterInfo.html", character_stats=get_character(charID))
 
-# character list route
 @app.route("/characters", methods=["GET"])
 def view_all_characters():
-    # Retrieve all characters from the database
-    all_characters = get_all_chars()
-    return render_template("character.html", all_characters=all_characters)
+    # Retrieve user ID from the session
+    user_id = session.get("user_id")
+    # Retrieve characters associated with the user ID
+    user_characters = get_user_characters(user_id)
+    return render_template("character.html", user_characters=user_characters)
 
 
 # character's inventory page route
