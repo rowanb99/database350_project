@@ -265,7 +265,7 @@ def home():
     if not session.get("logged_in"):
         return render_template("login.html")
     else:
-        return render_template("character.html")  # return the page to be rendered
+        return redirect(url_for("view_all_characters"))  # return the page to be rendered
 
 @app.route("/character/add", methods=["GET"])
 def add_character():
@@ -431,12 +431,12 @@ def create_char():
         # Send message to page. There is code in index.html that checks for these messages
         flash("Character added successfully", "success")
         # Redirect to home. This works because the home route is named home in this file
-        return redirect(url_for("home"))
+        return redirect(url_for("add_character"))
 
     # If an error occurs, this code block will be called
     except Exception as e:
         flash(f"An error occurred: {str(e)}", "error")  # Send the error message to the web page
-        return redirect(url_for("home"))  # Redirect to home
+        return redirect(url_for("add_character"))  # Redirect to home
 
 
 # ------------------------ END ROUTES ------------------------ #
