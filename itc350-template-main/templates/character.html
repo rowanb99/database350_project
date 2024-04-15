@@ -33,7 +33,7 @@
 
     <!-- test code -->
     <!-- Button to redirect to add new character -->
-    <a href="{{ url_for('home') }}" class="add-character-button">Add New Character</a>
+    <a href="{{ url_for('add_character') }}" class="add-character-button">Add New Character</a>
 
     <table>
         <thead>
@@ -61,5 +61,8 @@
             {% endfor %}
         </tbody>
     </table>
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>

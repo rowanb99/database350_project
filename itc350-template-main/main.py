@@ -265,8 +265,11 @@ def home():
     if not session.get("logged_in"):
         return render_template("login.html")
     else:
-        return render_template("index.html")  # return the page to be rendered
+        return render_template("character.html")  # return the page to be rendered
 
+@app.route("/character/add", methods=["GET"])
+def add_character():
+    return render_template("index.html")
 
 @app.route("/login", methods=["POST"])
 def login():
@@ -401,6 +404,7 @@ def purchase_item():
 def sell_item():
     data = request.form
     sellItem(data["charID"], data["itemID"], data["cost"])
+    unequip(data["charID"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
     
 

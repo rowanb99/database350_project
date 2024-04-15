@@ -17,7 +17,7 @@
         {% endif %}
     {% endwith %}
 
-    <h1>{{inventory[0][1]}}'s Inventory</h1>
+    <h1>{{character[2]}}'s Inventory</h1>
 
     <table>
         <thead>
@@ -32,6 +32,7 @@
             </tr>
         </thead>
 
+        {% if inventory %}
         <tbody>
             {% for item in inventory %}
             <tr>
@@ -67,10 +68,11 @@
             </tr>
             {% endfor %}
         </tbody>
+        {% endif %}
 
     </table>
 
-    <h1>{{inventory[0][1]}}'s Stats with Current Item</h1>
+    <h1>{{character[2]}}'s Stats with Current Item</h1>
     {% if equippedItem[0] != None %}
     <ul>
         <li>Smartness: {{ character[4] + character[9] + character[14] + character[19] }}</li> 
@@ -87,7 +89,7 @@
     <div></div>
 
     <form action="/redirect/store" method="post">
-        <input type="text" id="charID" name="charID" value="{{inventory[0][0]}}" required hidden>
+        <input type="text" id="charID" name="charID" value="{{character[1]}}" required hidden>
         <input type="submit" value="Enter Shop">
     </form>
 
