@@ -128,7 +128,7 @@ def get_character(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = ("SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, "
-             "CharacterSmartness, CharacterSpeediness FROM characters WHERE CharacterID = %s")
+             "CharacterSmartness, CharacterSpeediness, CharacterID FROM characters WHERE CharacterID = %s")
     cursor.execute(query, (character_id,))
     result = cursor.fetchone()
     conn.close()
@@ -248,7 +248,7 @@ def get_user_id(username):
 def get_user_characters(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness FROM characters WHERE UserID = %s"
+    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness, CharacterID FROM characters WHERE UserID = %s"
     cursor.execute(query, (user_id,))
     user_characters = cursor.fetchall()
     conn.close()

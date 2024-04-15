@@ -15,5 +15,19 @@
         <li><strong>Speediness:</strong> {{ character_stats.speediness }}</li>
     </ul>
     <p><strong>Equipped Item:</strong> {{ character_stats.equipped_item }}</p>
+
+    <form action="/redirect/character/inventory" method="post">
+        <input type="text" id="charID" name="charID" value="{{character_stats[6]}}" required hidden>
+        <input type="submit" value="View Inventory">
+    </form>
+
+    <form action="/characters" method="get">
+        <input type="submit" value="Return to Characters">
+    </form>
+
+    <form action="/logout" method="post">
+        <button type="submit">Logout</button>
+    </form>
+
 </body>
 </html>

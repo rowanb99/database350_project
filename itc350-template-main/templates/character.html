@@ -41,6 +41,7 @@
                 <th>First Name</th>
                 <th>Last Name</th>
                 <th>Show All Attributes</th>
+                <th>View Full Character</th>
             </tr>
         </thead>
         <tbody>
@@ -49,6 +50,12 @@
                 <td>{{ character[0] }}</td>
                 <td>{{ character[1] }}</td>
                 <td><button onclick="toggleAttributes('{{ character[0] }}')">Show All Attributes</button></td>
+                <td>
+                    <form action="/redirect/characterinfo" method="post">
+                        <input type="text" id="charID" name="charID" value="{{character[6]}}" required hidden>
+                        <input type="submit" value="View Character">
+                    </form>
+                </td>
             </tr>
             <tr id="attributes-{{ character[0] }}" class="hidden">
                 <td colspan="3">
