@@ -389,9 +389,15 @@ def redirect_store():
 
 #redirect to characterinfo
 @app.route("/redirect/characterinfo", methods=["POST"])
-def redirect_characterinfo():
+def redirect_character_inventory():
     data=request.form
     return redirect(url_for("view_character_stats") + "?charID=" + data["charID"])
+
+#redirect to character inventory
+@app.route("/redirect/character/inventory", methods=["POST"])
+def redirect_characterinfo():
+    data=request.form
+    return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
 #item store
 @app.route("/character/inventory/store", methods=["GET"])
