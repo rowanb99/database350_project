@@ -12,6 +12,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv("SECRET")
 
 
+# hashes a password and returns the hashed password
 def hash_password(password):
     salt = bcrypt.gensalt()  # Generate a salt
     hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)  # Hash the password
@@ -47,6 +48,7 @@ def get_all_items():
     return result
 
 
+# This gets all characters from the database
 def get_all_chars():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -58,6 +60,7 @@ def get_all_chars():
     return result
 
 
+# this gets all users from the database
 def get_all_users():
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -68,6 +71,7 @@ def get_all_users():
     return result
 
 
+# This inserts a User in the database
 def insert_user(firstname, lastname, username, email, password):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -79,6 +83,7 @@ def insert_user(firstname, lastname, username, email, password):
     conn.close()
 
 
+# This inserts a character in the database
 def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness, user_id, class_id, race_id):
     print("User ID:", user_id)  # Print user ID for debugging
     conn = get_db_connection()
@@ -92,6 +97,7 @@ def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness,
     conn.close()
 
 
+# This gets the character INFO based on the character ID
 def get_char(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -102,6 +108,7 @@ def get_char(character_id):
     return result
 
 
+# This gets the inventory based on the character ID
 def get_inventory(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -112,6 +119,7 @@ def get_inventory(character_id):
     return result
 
 
+# This gets the character ID using the Firstname and lastname of a character
 def get_character_id(firstname, lastname):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -125,6 +133,7 @@ def get_character_id(firstname, lastname):
         return None  # Return None if character not found
 
 
+# Gets the character and attributes from database
 def get_character(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -136,6 +145,7 @@ def get_character(character_id):
     return result
 
 
+# Returns the equipped items of a character
 def get_equipped(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -146,6 +156,7 @@ def get_equipped(character_id):
     return result
 
 
+# Equips an item to a character
 def equip(character_id, item_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -156,6 +167,7 @@ def equip(character_id, item_id):
     conn.close()
 
 
+# Unequips an item from a character
 def unequip(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -166,10 +178,12 @@ def unequip(character_id):
     conn.close()
 
 
+# Checks both passwords
 def verify_password(password, hashed_password):
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password)
 
 
+# Helper function to verify that the login password is hashed and is the same as the password in the database
 def verify_login(username, password):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -185,6 +199,7 @@ def verify_login(username, password):
     return False
 
 
+# Function for getting the purse amount of a character from the database
 def get_purse(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -195,6 +210,7 @@ def get_purse(character_id):
     return result
 
 
+# Function for returning the inventory of a character
 def check_inventory(char_id, item_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -207,6 +223,7 @@ def check_inventory(char_id, item_id):
     return True
 
 
+# Function for purchasing items to update the database
 def purchase_items(char_id, item_id, cost):
     char_purse = int(get_purse(char_id)[0][0])
     cost = int(cost)
@@ -225,6 +242,7 @@ def purchase_items(char_id, item_id, cost):
         conn.close()
 
 
+# Selling Items function to update the database
 def sell_items(char_id, item_id, cost):
     char_purse = int(get_purse(char_id)[0][0])
     cost = int(cost)
@@ -242,6 +260,7 @@ def sell_items(char_id, item_id, cost):
     conn.close()
 
 
+# Helper function for getting the User ID
 def get_user_id(username):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -252,6 +271,7 @@ def get_user_id(username):
     return result
 
 
+# Helper function for getting users
 def get_user_characters(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -263,6 +283,7 @@ def get_user_characters(user_id):
     return user_characters
 
 
+# Function for getting the race description
 def get_race_desc(char_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -274,6 +295,7 @@ def get_race_desc(char_id):
     return desc[0][0]
 
 
+# function for selecting the class descriptions
 def get_class_desc(char_id):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -382,6 +404,7 @@ def view_character_stats():
                            equippedItem=get_equipped(request.args.get('charID'))[0][0])
 
 
+# viewing the characters route
 @app.route("/characters", methods=["GET"])
 def view_all_characters():
     # Retrieve user ID from the session
