@@ -84,7 +84,8 @@ def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness,
     conn = get_db_connection()
     cursor = conn.cursor()
     query = ("INSERT INTO characters (CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, "
-             "CharacterSmartness, CharacterSpeediness, UserID, ClassID, RaceID) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)")
+             "CharacterSmartness, CharacterSpeediness, UserID, ClassID, RaceID) VALUES (%s, %s, %s, %s, %s, %s, %s, "
+             "%s, %s)")
     cursor.execute(query, (firstname, lastname, beefiness, buffness, smartness, speediness, user_id, class_id, race_id))
     conn.commit()
     cursor.close()
