@@ -254,6 +254,24 @@ def get_user_characters(user_id):
     conn.close()
     return user_characters
 
+def getRaceDesc(charID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT RaceDescription FROM characters LEFT JOIN race ON characters.RaceID = race.RaceID WHERE CharacterID = %s"
+    cursor.execute(query, (charID,))
+    desc = cursor.fetchall()
+    conn.close()
+    return desc[0][0]
+
+def getClassDesc(charID):
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    query = "SELECT ClassDescription FROM characters LEFT JOIN class ON characters.ClassID = class.ClassID WHERE CharacterID = %s"
+    cursor.execute(query, (charID,))
+    desc = cursor.fetchall()
+    conn.close()
+    return desc[0][0]
+
 
 # ------------------------ END FUNCTIONS ------------------------ #
 
@@ -347,7 +365,7 @@ def register():
 @app.route("/characterinfo", methods=["GET"])
 def view_character_stats():
     charID = request.args.get('charID')
-    return render_template("characterInfo.html", character_stats=get_character(charID))
+    return render_template("characterInfo.html", character=getChar(charID)[0], race_desc=getRaceDesc(charID), class_desc=getClassDesc(charID), equippedItem=getEquipped(request.args.get('charID'))[0][0])
 
 @app.route("/characters", methods=["GET"])
 def view_all_characters():
