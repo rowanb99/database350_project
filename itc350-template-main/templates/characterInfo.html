@@ -1,30 +1,64 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Character Information</title>
 </head>
 <body>
-    <h1>{{ character_stats.name }}</h1>
-    <p><strong>Race:</strong> {{ character_stats.race }}</p>
-    <p><strong>Stats:</strong></p>
+    <h1>{{ character[2] + " " + character[3] }}</h1>
+    <p><strong>Base Stats:</strong></p>
     <ul>
-        <li><strong>Smartness:</strong> {{ character_stats.smartness }}</li>
-        <li><strong>Buffness:</strong> {{ character_stats.buffness }}</li>
-        <li><strong>Beefyness:</strong> {{ character_stats.beefyness }}</li>
-        <li><strong>Speediness:</strong> {{ character_stats.speediness }}</li>
+        <li><strong>Smartness:</strong> {{ character[4] }}</li>
+        <li><strong>Buffness:</strong> {{ character[5] }}</li>
+        <li><strong>Beefyness:</strong> {{ character[6] }}</li>
+        <li><strong>Speediness:</strong> {{ character[7] }}</li>
     </ul>
-    <p><strong>Equipped Item:</strong> {{ character_stats.equipped_item }}</p>
-
+    <br>
+    <p><strong>Race:</strong> {{ character[13] }}</p>
+    <p>Description: {{ race_desc }}</p>
+    <p>Smartness Bonus: {{ character[9] }}</p>
+    <p>Buffness Bonus: {{ character[10] }}</p>
+    <p>Beefyness Bonus: {{ character[11] }}</p>
+    <p>Speediness Bonus: {{ character[12] }}</p>
+    <br>
+    <p><strong>Class:</strong> {{ character[8] }}</p>
+    <p>Description: {{ class_desc }}</p>
+    <p>Smartness Bonus: {{ character[14] }}</p>
+    <p>Buffness Bonus: {{ character[15] }}</p>
+    <p>Beefyness Bonus: {{ character[16] }}</p>
+    <p>Speediness Bonus: {{ character[17] }}</p>
+    <br>
+    {% if equippedItem != None %}
+    <p><strong>Item:</strong> {{ character[18] }}</p>
+    <p>Smartness Bonus: {{ character[19] }}</p>
+    <p>Beefyness Bonus: {{ character[20] }}</p>
+    <p>Speediness Bonus: {{ character[21] }}</p>
+    <br>
+    {% endif %}
+    <p><strong>Combined Stats:</strong></p>
+    <ul>
+        {% if equippedItem != None %}
+        <li><strong>Smartness:</strong> {{ character[4] + character[9] + character[14] + character[19] }}</li>
+        <li><strong>Buffness:</strong> {{ character[5] + character[10] + character[15] }}</li>
+        <li><strong>Beefyness:</strong> {{ character[6] + character[11] + character[16] + character[20] }}</li>
+        <li><strong>Speediness:</strong> {{ character[7] + character[12] + character[17] + character[21] }}</li>
+        {% else %}
+        <li><strong>Smartness:</strong> {{ character[4] + character[9] + character[14] }}</li>
+        <li><strong>Buffness:</strong> {{ character[5] + character[10] + character[15] }}</li>
+        <li><strong>Beefyness:</strong> {{ character[6] + character[11] + character[16] }}</li>
+        <li><strong>Speediness:</strong> {{ character[7] + character[12] + character[17] }}</li>
+        {% endif %}
+    </ul>
+    <br>
     <form action="/redirect/character/inventory" method="post">
-        <input type="text" id="charID" name="charID" value="{{character_stats[6]}}" required hidden>
+        <input type="text" id="charID" name="charID" value="{{character[1]}}" required hidden>
         <input type="submit" value="View Inventory">
     </form>
-
+    <br>
     <form action="/characters" method="get">
         <input type="submit" value="Return to Characters">
     </form>
-
+    <br>
     <form action="/logout" method="post">
         <button type="submit">Logout</button>
     </form>
