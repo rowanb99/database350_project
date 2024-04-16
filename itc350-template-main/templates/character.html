@@ -11,7 +11,9 @@
             attributes.classList.toggle('hidden');
         }
     </script>
-    <style>
+
+    <!-- Internal CSS to hide elements with class 'hidden'-->
+    <style> 
         .hidden {
             display: none;
         }
@@ -31,10 +33,10 @@
     <!-- Display all characters -->
     <h2>List of All Characters</h2>
 
-    <!-- test code -->
     <!-- Button to redirect to add new character -->
     <a href="{{ url_for('add_character') }}" class="add-character-button">Add New Character</a>
 
+    <!-- Table to display character information -->
     <table>
         <thead>
             <tr>
@@ -46,10 +48,14 @@
         </thead>
         <tbody>
             {% for character in user_characters %}
+            <!-- Row for each character -->
             <tr>
+                <!-- Display first and last name -->
                 <td>{{ character[0] }}</td>
                 <td>{{ character[1] }}</td>
+                <!-- Button to toggle showing the characters attributes -->
                 <td><button onclick="toggleAttributes('{{ character[0] }}')">Show All Attributes</button></td>
+                <!-- Form to submit character ID for full character view -->
                 <td>
                     <form action="/redirect/characterinfo" method="post">
                         <input type="text" id="charID" name="charID" value="{{character[6]}}" required hidden>
@@ -57,6 +63,7 @@
                     </form>
                 </td>
             </tr>
+            <!-- Row to display attributes, initially hidden -->
             <tr id="attributes-{{ character[0] }}" class="hidden">
                 <td colspan="3">
                     <strong>Beefiness:</strong> {{ character[2] }}<br>
@@ -68,6 +75,7 @@
             {% endfor %}
         </tbody>
     </table>
+    <!-- Log out from button -->
     <form action="/logout" method="post">
         <button type="submit">Logout</button>
     </form>
