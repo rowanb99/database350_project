@@ -17,6 +17,7 @@
         {% endif %}
     {% endwith %}
 
+    <!-- Display the characters inventory -->
     <h1>{{character[2]}}'s Inventory</h1>
 
     <table>
@@ -32,16 +33,20 @@
             </tr>
         </thead>
 
+        <!-- Check fi there are items in the inventory -->
         {% if inventory %}
         <tbody>
+            <!-- Loop through each item in the inventory -->
             {% for item in inventory %}
             <tr>
+                <!-- Display item details -->
                 <td>{{ item[7] }}</td>
                 <td>{{ item[8] }}</td>
                 <td>{{ item[9] }}</td>
                 <td>{{ item[10] }}</td>
                 <td>{{ item[11] }}</td>
                 <td>
+                    <!-- Form to equip or unequip item -->
                     {% if item[6] == equippedItem[0] %}
                     <form action="/character/inventory/unequip" method="post">
                         <input type="text" id="charID" name="charID" value="{{item[0]}}" required hidden>
@@ -58,6 +63,7 @@
                     {% endif %}
                 </td>
                 <td>
+                    <!-- From to sell item -->
                     <form action="/character/inventory/sell" method="post">
                         <input type="text" id="charID" name="charID" value="{{item[0]}}" required hidden>
                         <input type="text" id="itemID" name="itemID" value="{{item[6]}}" required hidden>
@@ -72,6 +78,7 @@
 
     </table>
 
+    <!-- Display character status with current item -->
     <h1>{{character[2]}}'s Stats with Current Item</h1>
     {% if equippedItem[0] != None %}
     <ul>
@@ -82,12 +89,14 @@
     </ul>
 
     {% else %}
+    <!-- Display message if no item equipped -->
     <div>No item equipped.</div>
 
     {% endif %}
 
     <br>
 
+    <!-- Form to enter teh shop -->
     <form action="/redirect/store" method="post">
         <input type="text" id="charID" name="charID" value="{{character[1]}}" required hidden>
         <input type="submit" value="Enter Shop">
@@ -95,6 +104,7 @@
 
     <br>
 
+    <!-- Form to return to character info -->
     <form action="/redirect/characterinfo" method="post">
         <input type="text" id="charID" name="charID" value="{{character[1]}}" required hidden>
         <input type="submit" value="Return to Character">
@@ -102,6 +112,7 @@
 
     <br>
 
+    <!-- Form to logout -->
     <form action="/logout" method="post">
         <button type="submit">Logout</button>
     </form>
