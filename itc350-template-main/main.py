@@ -92,21 +92,21 @@ def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness,
     conn.close()
 
 
-def getChar(characterID):
+def get_char(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT * FROM CharacterInfo WHERE CharacterID=%s"
-    cursor.execute(query, (characterID,))
+    cursor.execute(query, (character_id,))
     result = cursor.fetchall()
     conn.close()
     return result
 
 
-def getInventory(characterID):
+def get_inventory(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT * FROM Inventory WHERE CharacterID=%s"
-    cursor.execute(query, (characterID,))
+    cursor.execute(query, (character_id,))
     result = cursor.fetchall()
     conn.close()
     return result
@@ -136,31 +136,31 @@ def get_character(character_id):
     return result
 
 
-def getEquipped(characterID):
+def get_equipped(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT EquippedItemID FROM characters WHERE CharacterID=%s"
-    cursor.execute(query, (characterID,))
+    cursor.execute(query, (character_id,))
     result = cursor.fetchall()
     conn.close()
     return result
 
 
-def equip(characterID, itemID):
+def equip(character_id, item_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "UPDATE characters SET EquippedItemID=%s WHERE CharacterID=%s"
-    cursor.execute(query, (itemID, characterID))
+    cursor.execute(query, (item_id, character_id))
     conn.commit()
     cursor.close()
     conn.close()
 
 
-def unequip(characterID):
+def unequip(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "UPDATE characters SET EquippedItemID=NULL WHERE CharacterID=%s"
-    cursor.execute(query, (characterID,))
+    cursor.execute(query, (character_id,))
     conn.commit()
     cursor.close()
     conn.close()
@@ -185,21 +185,21 @@ def verify_login(username, password):
     return False
 
 
-def getPurse(characterID):
+def get_purse(character_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT CharacterPurse FROM characters WHERE CharacterID=%s"
-    cursor.execute(query, (characterID,))
+    cursor.execute(query, (character_id,))
     result = cursor.fetchall()
     conn.close()
     return result
 
 
-def checkInventory(charID, itemID):
+def check_inventory(char_id, item_id):
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "SELECT * FROM character_inventory WHERE CharacterID=%s AND ItemID=%s"
-    cursor.execute(query, (charID, itemID))
+    cursor.execute(query, (char_id, item_id))
     result = cursor.fetchall()
     conn.close()
     if not result:
@@ -207,36 +207,36 @@ def checkInventory(charID, itemID):
     return True
 
 
-def purchaseItem(charID, itemID, cost):
-    charPurse = int(getPurse(charID)[0][0])
+def purchase_items(char_id, item_id, cost):
+    char_purse = int(get_purse(char_id)[0][0])
     cost = int(cost)
-    print(charPurse)
+    print(char_purse)
     print(cost)
-    if (charPurse - cost >= 0) and (not checkInventory(charID, itemID)):
+    if (char_purse - cost >= 0) and (not check_inventory(char_id, item_id)):
         conn = get_db_connection()
         cursor = conn.cursor()
         query = "UPDATE characters SET CharacterPurse=%s WHERE CharacterID=%s"
-        cursor.execute(query, (charPurse - cost, charID))
+        cursor.execute(query, (char_purse - cost, char_id))
         conn.commit()
         query = "INSERT INTO character_inventory(ItemID, CharacterID) VALUES (%s, %s)"
-        cursor.execute(query, (itemID, charID))
+        cursor.execute(query, (item_id, char_id))
         conn.commit()
         cursor.close()
         conn.close()
 
 
-def sellItem(charID, itemID, cost):
-    charPurse = int(getPurse(charID)[0][0])
+def sell_items(char_id, item_id, cost):
+    char_purse = int(get_purse(char_id)[0][0])
     cost = int(cost)
-    print(charPurse)
+    print(char_purse)
     print(cost)
     conn = get_db_connection()
     cursor = conn.cursor()
     query = "UPDATE characters SET CharacterPurse=%s WHERE CharacterID=%s"
-    cursor.execute(query, (charPurse + cost, charID))
+    cursor.execute(query, (char_purse + cost, char_id))
     conn.commit()
     query = "DELETE FROM character_inventory WHERE ItemID=%s AND CharacterID=%s"
-    cursor.execute(query, (itemID, charID))
+    cursor.execute(query, (item_id, char_id))
     conn.commit()
     cursor.close()
     conn.close()
@@ -255,26 +255,31 @@ def get_user_id(username):
 def get_user_characters(user_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, CharacterSpeediness, CharacterID FROM characters WHERE UserID = %s"
+    query = ("SELECT CharacterFName, CharacterLName, CharacterBeefyness, CharacterBuffness, CharacterSmartness, "
+             "CharacterSpeediness, CharacterID FROM characters WHERE UserID = %s")
     cursor.execute(query, (user_id,))
     user_characters = cursor.fetchall()
     conn.close()
     return user_characters
 
-def getRaceDesc(charID):
+
+def get_race_desc(char_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT RaceDescription FROM characters LEFT JOIN race ON characters.RaceID = race.RaceID WHERE CharacterID = %s"
-    cursor.execute(query, (charID,))
+    query = ("SELECT RaceDescription FROM characters LEFT JOIN race ON characters.RaceID = race.RaceID WHERE "
+             "CharacterID = %s")
+    cursor.execute(query, (char_id,))
     desc = cursor.fetchall()
     conn.close()
     return desc[0][0]
 
-def getClassDesc(charID):
+
+def get_class_desc(char_id):
     conn = get_db_connection()
     cursor = conn.cursor()
-    query = "SELECT ClassDescription FROM characters LEFT JOIN class ON characters.ClassID = class.ClassID WHERE CharacterID = %s"
-    cursor.execute(query, (charID,))
+    query = ("SELECT ClassDescription FROM characters LEFT JOIN class ON characters.ClassID = class.ClassID "
+             "WHERE CharacterID = %s")
+    cursor.execute(query, (char_id,))
     desc = cursor.fetchall()
     conn.close()
     return desc[0][0]
@@ -371,8 +376,10 @@ def register():
 # Character Info Page
 @app.route("/characterinfo", methods=["GET"])
 def view_character_stats():
-    charID = request.args.get('charID')
-    return render_template("characterInfo.html", character=getChar(charID)[0], race_desc=getRaceDesc(charID), class_desc=getClassDesc(charID), equippedItem=getEquipped(request.args.get('charID'))[0][0])
+    char_id = request.args.get('charID')
+    return render_template("characterInfo.html", character=get_char(char_id)[0], race_desc=get_race_desc(char_id),
+                           class_desc=get_class_desc(char_id),
+                           equippedItem=get_equipped(request.args.get('charID'))[0][0])
 
 
 @app.route("/characters", methods=["GET"])
@@ -387,9 +394,9 @@ def view_all_characters():
 # character's inventory page route
 @app.route("/character/inventory", methods=["GET"])
 def get_character_inventory():
-    return render_template("character_inventory.html", inventory=getInventory(request.args.get('charID')),
-                           equippedItem=getEquipped(request.args.get('charID'))[0],
-                           character=getChar(request.args.get('charID'))[0])
+    return render_template("character_inventory.html", inventory=get_inventory(request.args.get('charID')),
+                           equippedItem=get_equipped(request.args.get('charID'))[0],
+                           character=get_char(request.args.get('charID'))[0])
 
 
 # equip an item
@@ -432,15 +439,15 @@ def redirect_characterinfo():
 # item store
 @app.route("/character/inventory/store", methods=["GET"])
 def enter_store():
-    return render_template("item_shop.html", shop=get_all_items(), character=getChar(request.args.get('charID'))[0],
-                           characterPurse=getPurse(request.args.get('charID'))[0][0])
+    return render_template("item_shop.html", shop=get_all_items(), character=get_char(request.args.get('charID'))[0],
+                           characterPurse=get_purse(request.args.get('charID'))[0][0])
 
 
 # purchase an item
 @app.route("/character/inventory/store/purchase", methods=["POST"])
 def purchase_item():
     data = request.form
-    purchaseItem(data["charID"], data["itemID"], data["cost"])
+    purchase_items(data["charID"], data["itemID"], data["cost"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
 
@@ -448,7 +455,7 @@ def purchase_item():
 @app.route("/character/inventory/sell", methods=["POST"])
 def sell_item():
     data = request.form
-    sellItem(data["charID"], data["itemID"], data["cost"])
+    sell_items(data["charID"], data["itemID"], data["cost"])
     unequip(data["charID"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
@@ -471,8 +478,6 @@ def create_char():
 
         insert_char(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness,
                     user_id, class_id, race_id)
-
-        # TODO: Insert this data into the database
 
         # Send message to page. There is code in index.html that checks for these messages
         flash("Character added successfully", "success")
