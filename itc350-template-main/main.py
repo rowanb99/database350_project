@@ -36,8 +36,9 @@ def get_all_items():
     conn = get_db_connection()  # Create a new database connection
     cursor = conn.cursor(buffered=True)  # Creates a cursor for the connection, you need this to do queries
     # Query the db
-    query = ("SELECT ItemName, ItemCost, ItemBaseDamage, ItemBeefynessBonus,ItemSmartnessBonus, ItemSpeedinessBonus, ItemID "
-             "FROM item")
+    query = (
+        "SELECT ItemName, ItemCost, ItemBaseDamage, ItemBeefynessBonus,ItemSmartnessBonus, ItemSpeedinessBonus, ItemID "
+        "FROM item")
     cursor.execute(query)
     # Get result and close
     result = cursor.fetchall()  # Gets result from query
@@ -88,7 +89,6 @@ def insert_char(firstname, lastname, beefiness, buffness, smartness, speediness,
     conn.commit()
     cursor.close()
     conn.close()
-
 
 
 def getChar(characterID):
@@ -183,6 +183,7 @@ def verify_login(username, password):
             return True
     return False
 
+
 def getPurse(characterID):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -191,6 +192,7 @@ def getPurse(characterID):
     result = cursor.fetchall()
     conn.close()
     return result
+
 
 def checkInventory(charID, itemID):
     conn = get_db_connection()
@@ -202,6 +204,7 @@ def checkInventory(charID, itemID):
     if not result:
         return False
     return True
+
 
 def purchaseItem(charID, itemID, cost):
     charPurse = int(getPurse(charID)[0][0])
@@ -220,6 +223,7 @@ def purchaseItem(charID, itemID, cost):
         cursor.close()
         conn.close()
 
+
 def sellItem(charID, itemID, cost):
     charPurse = int(getPurse(charID)[0][0])
     cost = int(cost)
@@ -236,6 +240,7 @@ def sellItem(charID, itemID, cost):
     cursor.close()
     conn.close()
 
+
 def get_user_id(username):
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -244,6 +249,7 @@ def get_user_id(username):
     result = cursor.fetchone()[0]
     conn.close()
     return result
+
 
 def get_user_characters(user_id):
     conn = get_db_connection()
@@ -267,20 +273,22 @@ def home():
     else:
         return redirect(url_for("view_all_characters"))  # return the page to be rendered
 
+
 @app.route("/character/add", methods=["GET"])
 def add_character():
     return render_template("index.html")
 
+
 @app.route("/login", methods=["POST"])
 def login():
-    data = request.form
+    data = request.form  # The form returned will have data objects username and password which will then be stored.
     username = data["username"]
     password = data["password"]
 
     right_password = verify_login(username, password)
     if right_password:
         user_id = get_user_id(username)
-        if user_id:
+        if user_id:  # All of these are session variables that will be stored and then later accessed.
             session["logged_in"] = True
             session["username"] = username
             session["user_id"] = user_id  # Store user ID in session
@@ -294,16 +302,15 @@ def login():
         return render_template("login.html")
 
 
-
-@app.route("/logout", methods=["POST"])
+@app.route("/logout", methods=["POST"])  # Logout method
 def logout():
-    session["logged_in"] = False
+    session["logged_in"] = False  # Session variables are removed from the project
     session.pop("username", None)
     flash("Logged out successfully", "success")
     return redirect(url_for("home"))
 
 
-@app.route("/register", methods=["GET", "POST"])
+@app.route("/register", methods=["GET", "POST"])  # The register endpoint is used to register a user
 def register():
     if request.method == "POST":
         try:
@@ -312,17 +319,17 @@ def register():
             lastname = data["lastname"]
             username = data["username"]
             email = data["email"]
-            password = data["password"]
+            password = data["password"]  # Gathering data from the form
 
             users = get_all_users()
 
             existing_users = [user[0] for user in users]
-            if username in existing_users:
+            if username in existing_users:  # If the username exists does not log in and store
                 flash("Username already exists. Please choose a different one.", "warning")
                 return render_template("register.html")
 
             existing_email = [user[2] for user in users]
-            if email in existing_email:
+            if email in existing_email:  # If the email exists it does not log in and store
                 flash("Email already exists. Please choose a different one.", "warning")
                 return render_template("register.html")
 
@@ -332,13 +339,12 @@ def register():
             session["username"] = username
             session["user_id"] = user_id
 
-
             flash("Registration successful. You have been automatically logged in.", "success")
-            return redirect(url_for("home"))
+            return redirect(url_for("home"))  # If the registration is successful it returns the page for home
 
         except Exception as e:
             flash(f"An error occurred during registration: {str(e)}", "error")
-            return redirect(url_for("register"))
+            return redirect(url_for("register"))  # Exception handling in case something goes wrong
     else:
         return render_template("register.html")
 
@@ -348,6 +354,7 @@ def register():
 def view_character_stats():
     charID = request.args.get('charID')
     return render_template("characterInfo.html", character_stats=get_character(charID))
+
 
 @app.route("/characters", methods=["GET"])
 def view_all_characters():
@@ -381,44 +388,51 @@ def unequip_item():
     unequip(data["charID"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
-#redirect to store
+
+# redirect to store
 @app.route("/redirect/store", methods=["POST"])
 def redirect_store():
-    data=request.form
+    data = request.form
     return redirect(url_for("enter_store") + "?charID=" + data["charID"])
 
-#redirect to characterinfo
+
+# redirect to characterinfo
 @app.route("/redirect/characterinfo", methods=["POST"])
 def redirect_character_inventory():
-    data=request.form
+    data = request.form
     return redirect(url_for("view_character_stats") + "?charID=" + data["charID"])
 
-#redirect to character inventory
+
+# redirect to character inventory
 @app.route("/redirect/character/inventory", methods=["POST"])
 def redirect_characterinfo():
-    data=request.form
+    data = request.form
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
-#item store
+
+# item store
 @app.route("/character/inventory/store", methods=["GET"])
 def enter_store():
-    return render_template("item_shop.html", shop=get_all_items(), character=getChar(request.args.get('charID'))[0], characterPurse=getPurse(request.args.get('charID'))[0][0] )
+    return render_template("item_shop.html", shop=get_all_items(), character=getChar(request.args.get('charID'))[0],
+                           characterPurse=getPurse(request.args.get('charID'))[0][0])
 
-#purchase an item
+
+# purchase an item
 @app.route("/character/inventory/store/purchase", methods=["POST"])
 def purchase_item():
     data = request.form
     purchaseItem(data["charID"], data["itemID"], data["cost"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
 
-#sell an item
+
+# sell an item
 @app.route("/character/inventory/sell", methods=["POST"])
 def sell_item():
     data = request.form
     sellItem(data["charID"], data["itemID"], data["cost"])
     unequip(data["charID"])
     return redirect(url_for("get_character_inventory") + "?charID=" + data["charID"])
-    
+
 
 # EXAMPLE OF POST REQUEST
 @app.route("/new-character", methods=["POST"])
@@ -436,7 +450,8 @@ def create_char():
         class_id = data["class"]
         race_id = data["race"]
 
-        insert_char(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness, user_id, class_id, race_id)
+        insert_char(char_first_name, char_last_name, char_beefiness, char_buffness, char_smartness, char_speediness,
+                    user_id, class_id, race_id)
 
         # TODO: Insert this data into the database
 
